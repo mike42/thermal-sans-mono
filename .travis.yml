@@ -3,7 +3,7 @@
 language: java
 
 install:
-  - DEBIAN_FRONTEND=noninteractive apt-get -yq install unifont imagemagick fontforge php python3
+  - DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install unifont imagemagick fontforge php python3
   - git clone https://github.com/mike42/fontscale-util
   - (cd fontscale-util && mvn clean package)
   - cp fontscale-util/target/fontscale-util-*-jar-with-dependencies.jar utils/fontscale-wrapper/fontscale-utils.jar
