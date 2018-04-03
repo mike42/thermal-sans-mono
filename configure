@@ -1,0 +1,161 @@
+#!/usr/bin/env python3
+import csv
+
+BASE_MAKEFILE = """.RECIPEPREFIX +=
+.SECONDARY:
+"""
+BASE_RULES = """
+SMALL_GLYPHS=$(PLACEHOLDERS_SMALL) $(SCALED_SMALL) $(TRACE_SMALL)
+
+LARGE_GLPYHS=$(PLACEHOLDERS_LARGE) $(SCALED_LARGE) $(TRACE_LARGE)
+
+default: outp/thermal-sans-mono-17/thermal-sans-mono-17.png \\
+  outp/thermal-sans-mono-24/thermal-sans-mono-24.png
+
+# Generate montages of glyphs
+outp/thermal-sans-mono-17/thermal-sans-mono-17.png: $(SMALL_GLYPHS)
+  mkdir -p $(@D)
+  mkdir -p build/montage/17px
+  @echo $^ > build/montage/17px/inputs-unsorted.txt
+  php ./utils/montage/montage-sort.php \
+    build/montage/17px/inputs-unsorted.txt \
+    build/montage/17px/montage-command-list.txt 18x17+0+0
+  parallel < build/montage/17px/montage-command-list.txt
+  convert build/montage/17px/**.pbm -append $@
+
+outp/thermal-sans-mono-24/thermal-sans-mono-24.png: $(LARGE_GLPYHS)
+  mkdir -p $(@D)
+  mkdir -p build/montage/24px
+  @echo $^ > build/montage/24px/inputs-unsorted.txt
+  php ./utils/montage/montage-sort.php \
+    build/montage/24px/inputs-unsorted.txt \
+    build/montage/24px/montage-command-list.txt 24x24+0+0
+  parallel < build/montage/24px/montage-command-list.txt
+  convert build/montage/24px/**.pbm -append $@
+
+# Wrap scaling program
+build/trace/24px/%.bold.pbm: build/scale/16px/%.pbm definitions/thermalsans24.csv
+  mkdir -p $(@D)
+  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 12x24 20; \
+  else \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 24x24 20; \
+  fi
+
+build/trace/17px/%.bold.pbm: build/scale/16px/%.pbm definitions/thermalsans17.csv
+  mkdir -p $(@D)
+  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 9x17 20; \
+  else \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 18x17 20; \
+  fi
+
+# Generate raw scaled glyphs
+build/scale/24px/%.pbm: build/scale/16px/%.pbm
+  mkdir -p $(@D)
+  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+    convert $< -resize 12x24 $@; \
+  else \
+    convert $< -resize 24x24 $@; \
+  fi
+
+build/scale/17px/%.pbm: build/scale/16px/%.pbm
+  mkdir -p $(@D)
+  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+    convert $< -resize 9x17 $@; \
+  else \
+    convert $< -resize 18x17 $@; \
+  fi
+
+# Actual Unifont extraction
+build/scale/16px/%.pbm:
+  mkdir -p $(@D)
+  php ./utils/hex2pbm/hex2pbm.php $(UNIFONT_PATH) $(basename $(@F)) $@
+
+# Generate placeholder glpyhs
+build/placeholder/24px/%.pbm:
+  mkdir -p $(@D)
+  php ./utils/placeholder/placeholder.php $(basename $(@F)) large $@
+
+build/placeholder/17px/%.pbm:
+  mkdir -p $(@D)
+  php ./utils/placeholder/placeholder.php $(basename $(@F)) small $@
+
+clean:
+  rm -Rf build/ outp/
+"""
+
+placeholderSmallTargets = []
+placeholderLargeTargets = []
+scaleSmallTargets = []
+scaleLargeTargets = []
+traceSmallTargets = []
+traceLargeTargets = []
+
+def dirInfo(prefix, codePoint, suffix):
+  prefix.append(codePoint[0])
+  prefix.append(codePoint[1])
+  dirname = "/".join(prefix)
+  fn = codePoint + suffix
+  return {
+    'dirname': dirname,
+    'path': dirname + "/" + fn 
+  }
+
+def registerPlaceholder(height, codePoint, method, args):
+  path = dirInfo(["build", "placeholder", height + "px"], codePoint, ".pbm")
+  if(height == '17'):
+    placeholderSmallTargets.append(path['path'])
+  elif height == '24':
+    placeholderLargeTargets.append(path['path'])
+
+def registerScale(height, codePoint, method, args):
+  path = dirInfo(["build", "scale", height + "px"], codePoint, ".pbm")
+  if(height == '17'):
+    scaleSmallTargets.append(path['path'])
+  elif height == '24':
+    scaleLargeTargets.append(path['path'])
+
+def registerTrace(height, codePoint, method, args):
+  if(height == '17'):
+    # TODO allow use of bold or regular based on individual glyph.
+    path = dirInfo(["build", "trace", height + "px"], codePoint, ".bold.pbm")
+    traceSmallTargets.append(path['path'])
+  elif height == '24':
+    path = dirInfo(["build", "trace", height + "px"], codePoint, ".bold.pbm")
+    traceLargeTargets.append(path['path'])
+
+def registerGlyph(height, codePoint, method, args):
+  if(method == "placeholder"):
+    registerPlaceholder(height, codePoint, method, args)
+  elif(method == "scale"):
+    registerScale(height, codePoint, method, args)
+  elif(method == "trace"):
+    registerTrace(height, codePoint, method, args)
+  else:
+    raise Exception("Unknown method '" + method + "' for codePoint " + codePoint + " at height " + height + "px")
+
+print("Reading glyph definitions ..")
+for height in ['17', '24']:
+  fn = 'definitions/thermalsans' + height + '.csv'
+  print("  " + fn)
+  with open(fn, newline='') as csvfile:
+    rdr = csv.DictReader(csvfile, delimiter=',', quotechar='\"')
+    for row in rdr:
+      registerGlyph(height, row['codePoint'], row['method'], {
+        'trace': row['traceArgs'],
+        'rasterSrc': row['rasterSrcArgs'],
+        'rasterDest': row['rasterDestArgs']
+      });
+print("Outputting Makefile ..")
+
+with open('Makefile', 'w') as makefile:
+  makefile.write(BASE_MAKEFILE)
+  makefile.write("UNIFONT_PATH=/usr/share/unifont/unifont.hex\n")
+  makefile.write("PLACEHOLDERS_SMALL=" + " ".join(placeholderSmallTargets) + "\n")
+  makefile.write("PLACEHOLDERS_LARGE=" + " ".join(placeholderLargeTargets) + "\n")
+  makefile.write("SCALED_SMALL=" + " ".join(scaleSmallTargets) + "\n")
+  makefile.write("SCALED_LARGE=" + " ".join(scaleLargeTargets) + "\n")
+  makefile.write("TRACE_SMALL=" + " ".join(traceSmallTargets) + "\n")
+  makefile.write("TRACE_LARGE=" + " ".join(traceLargeTargets) + "\n")
+  makefile.write(BASE_RULES)
