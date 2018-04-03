@@ -1,0 +1,16 @@
+---
+# We are actually a mix of languages, but need to start from somewhere
+language: java
+
+install:
+  - DEBIAN_FRONTEND=noninteractive apt-get -yq install unifont imagemagick fontforge php python3
+  - git clone https://github.com/mike42/fontscale-util
+  - (cd fontscale-util && mvn clean package)
+  - cp fontscale-util/target/fontscale-util-*-jar-with-dependencies.jar utils/fontscale-wrapper/fontscale-utils.jar
+  - which php
+  - which python
+  - which python3
+
+script:
+  - ./configure
+  - make -j64
