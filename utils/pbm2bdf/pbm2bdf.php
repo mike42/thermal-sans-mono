@@ -1,11 +1,11 @@
 <?php
 # php ./utils/pbm2bdf/pbm2bdf.php     build/bdf/17px/inputs-unsorted.txt 17 outp/thermal-sans-mono-17/thermal-sans-mono-17.bdf
 
-require_once(__DIR__ . "/../../../image-php/vendor/autoload.php");
+require_once(__DIR__ . "/../vendor/autoload.php");
 use Mike42\ImagePhp\Image;
 
 if(count($argv) != 4) {
-  die("Usage: " . $argv[0] . " infiles.txt height outfile.bdf");
+  die("Usage: " . $argv[0] . " infiles.txt height outfile.bdf\n");
 }
 
 $inpFilename = $argv[1];
