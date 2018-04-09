@@ -10,7 +10,9 @@ SMALL_GLYPHS=$(PLACEHOLDERS_SMALL) $(SCALED_SMALL) $(TRACE_SMALL)
 LARGE_GLPYHS=$(PLACEHOLDERS_LARGE) $(SCALED_LARGE) $(TRACE_LARGE)
 
 default: outp/thermal-sans-mono-17/thermal-sans-mono-17.png \\
-  outp/thermal-sans-mono-24/thermal-sans-mono-24.png
+  outp/thermal-sans-mono-24/thermal-sans-mono-24.png \\
+  outp/thermal-sans-mono-17/thermal-sans-mono-17.pcf \\
+  outp/thermal-sans-mono-24/thermal-sans-mono-24.pcf
 
 # Generate montages of glyphs
 outp/thermal-sans-mono-17/thermal-sans-mono-17.png: $(SMALL_GLYPHS)
@@ -32,6 +34,20 @@ outp/thermal-sans-mono-24/thermal-sans-mono-24.png: $(LARGE_GLPYHS)
     build/montage/24px/montage-command-list.txt 24x24+0+0
   parallel < build/montage/24px/montage-command-list.txt
   convert build/montage/24px/**.pbm -append $@
+
+outp/thermal-sans-mono-24/thermal-sans-mono-24.bdf: $(LARGE_GLPYHS)
+  mkdir -p $(@D)
+  mkdir -p build/bdf/24px
+  @echo $^ > build/bdf/24px/inputs-unsorted.txt
+  php ./utils/pbm2bdf/pbm2bdf.php \
+    build/bdf/24px/inputs-unsorted.txt 24 $@
+
+outp/thermal-sans-mono-17/thermal-sans-mono-17.bdf: $(SMALL_GLYPHS)
+  mkdir -p $(@D)
+  mkdir -p build/bdf/17px
+  @echo $^ > build/bdf/17px/inputs-unsorted.txt
+  php ./utils/pbm2bdf/pbm2bdf.php \
+    build/bdf/17px/inputs-unsorted.txt 17 $@
 
 # Wrap scaling program
 build/trace/24px/%.bold.pbm: build/scale/16px/%.pbm definitions/thermalsans24.csv
@@ -80,6 +96,13 @@ build/placeholder/24px/%.pbm:
 build/placeholder/17px/%.pbm:
   mkdir -p $(@D)
   php ./utils/placeholder/placeholder.php $(basename $(@F)) small $@
+
+# Conversion
+%.pcf: %.bdf
+  bdftopcf -o $@ $< 
+
+#%.gz: %
+#  gzip $< > $@
 
 clean:
   rm -Rf build/ outp/
