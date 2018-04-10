@@ -1,6 +1,4 @@
 <?php
-# php ./utils/pbm2bdf/pbm2bdf.php     build/bdf/17px/inputs-unsorted.txt 17 outp/thermal-sans-mono-17/thermal-sans-mono-17.bdf
-
 require_once(__DIR__ . "/../vendor/autoload.php");
 use Mike42\ImagePhp\Image;
 
@@ -29,50 +27,9 @@ $glyphCount = count($codePoint);
 if($height == 17) {
   $width = 9;
   $widthDouble = 18;
-  $bitmap = "FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80
-FF80";
 } else if($height == 24) {
   $width = 12;
   $widthDouble = 24;
-  $bitmap = "FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0
-FFF0";
 } else {
   die("Unsupported font size. :(");
 }
@@ -137,7 +94,6 @@ BBX $glyphWidth $glyphHeight 0 0
 BITMAP 
 $glyphDataHexLines
 ENDCHAR\n");
-
 }
 
 // End font
