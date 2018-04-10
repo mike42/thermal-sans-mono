@@ -116,15 +116,26 @@ for($i = 0 ; $i <= 65535; $i++ ) {
   if(!isset($codePoint[$thisCodePoint])) {
     continue;
   }
-  //echo $thisCodePoint . "\n";
+  // Print each glyph
   $glyphBitmapFile = $codePoint[$thisCodePoint];
+  $img = Image::fromFile($glyphBitmapFile);
+  echo "U+$thisCodePoint:\n";
+  echo $img -> toString();
+  // Extract binary data in hex-encoded format.
+  $glyphWidth = $img -> getWidth();
+  $glyphHeight = $img -> getHeight();
+  $glyphDataBin = $img -> getRasterData();
+  $bytesPerLine = intdiv($glyphWidth + 7, 8);
+  $glyphDataHex = strtoupper(bin2hex($glyphDataBin));
+  $glyphDataHexLines = implode("\n", str_split($glyphDataHex, $bytesPerLine * 2));
+
 fwrite($f, "STARTCHAR U+$thisCodePoint
 ENCODING $i
 SWIDTH 500 0
 DWIDTH $width 0
-BBX $width $height 0 0
+BBX $glyphWidth $glyphHeight 0 0
 BITMAP 
-$bitmap
+$glyphDataHexLines
 ENDCHAR\n");
 
 }
