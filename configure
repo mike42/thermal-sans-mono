@@ -53,17 +53,17 @@ outp/thermal-sans-mono-17/thermal-sans-mono-17.bdf: $(SMALL_GLYPHS)
 build/trace/24px/%.bold.pbm: build/scale/16px/%.pbm definitions/thermalsans24.csv
   mkdir -p $(@D)
   if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 12x24 20; \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 12x24 20; \
   else \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 24x24 20; \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 24x24 20; \
   fi
 
 build/trace/17px/%.bold.pbm: build/scale/16px/%.pbm definitions/thermalsans17.csv
   mkdir -p $(@D)
   if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 9x17 20; \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 9x17 20; \
   else \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $? $(UNIFONT_PATH) 18x17 20; \
+    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 18x17 20; \
   fi
 
 # Generate raw scaled glyphs
