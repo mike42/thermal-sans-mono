@@ -191,6 +191,7 @@ $draw->setFillColor('#f00');
 $draw->setStrokeColor('#000');
 $draw->setStrokeWidth($strokeWidth);
 $hit = [];
+
 foreach($mappedLines as $line) {
   $draw->line($line['x1'], $line['y1'], $line['x2'], $line['y2']);
   if(!isset($hit[$line['x1']])) {
@@ -200,20 +201,25 @@ foreach($mappedLines as $line) {
     $hit[$line['x1']][$line['y1']] = 0;
   }
   $hit[$line['x1']][$line['y1']]++;
+
 }
 
 $draw->setStrokeWidth(0);
 $draw->setStrokeOpacity(0);
-
 $r = $strokeWidth / 2;
-foreach($hit as $x => $xHit) {
-  foreach($xHit as $y => $count) {
-    // Can set to 1 to only draw circles on joined lines.
-    if($count > 0) {
-      $draw->circle ($x, $y, $x + $r, $y);
-    }
-  }
+foreach($mappedLines as $line) {
+  $draw->circle ($line['x1'], $line['y1'], $line['x1'], $line['y1'] + $r);
+  $draw->circle ($line['x2'], $line['y2'], $line['x2'], $line['y2'] + $r);
 }
+
+//foreach($hit as $x => $xHit) {
+//  foreach($xHit as $y => $count) {
+//    // Can set to 1 to only draw circles on joined lines.
+//    if($count > 0) {
+//      $draw->circle ($x, $y + 1, $x, $y + $r);
+//    }
+//  }
+//}
 
 $img->drawImage($draw);
 
