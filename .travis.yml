@@ -8,6 +8,7 @@ addons:
   apt:
     packages:
       - libxml2-utils
+      - parallel
 
 install:
   - DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install unifont imagemagick fontforge maven python3
