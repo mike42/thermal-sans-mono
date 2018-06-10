@@ -17,6 +17,7 @@ install:
   - which php
   - which python
   - which python3
+  - pecl install imagick
 
 script:
   - ./configure
