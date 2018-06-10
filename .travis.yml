@@ -4,6 +4,11 @@ language: php
 php:
   - '7.0'
 
+addons:
+  apt:
+    packages:
+      - libxml2-utils
+
 install:
   - DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install unifont imagemagick fontforge maven python3
   - git clone https://github.com/mike42/fontscale-util
