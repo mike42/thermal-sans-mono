@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import csv
 
-BASE_MAKEFILE = """.RECIPEPREFIX +=
+BASE_MAKEFILE = """
 .SECONDARY:
 """
 BASE_RULES = """
@@ -10,102 +10,102 @@ SMALL_GLYPHS=$(PLACEHOLDERS_SMALL) $(SCALED_SMALL) $(TRACE_SMALL)
 LARGE_GLPYHS=$(PLACEHOLDERS_LARGE) $(SCALED_LARGE) $(TRACE_LARGE)
 
 default: outp/thermal-sans-mono-17/thermal-sans-mono-17.png \\
-  outp/thermal-sans-mono-24/thermal-sans-mono-24.png \\
-  outp/thermal-sans-mono-17/thermal-sans-mono-17.pcf \\
-  outp/thermal-sans-mono-24/thermal-sans-mono-24.pcf
+	outp/thermal-sans-mono-24/thermal-sans-mono-24.png \\
+	outp/thermal-sans-mono-17/thermal-sans-mono-17.pcf \\
+	outp/thermal-sans-mono-24/thermal-sans-mono-24.pcf
 
 # Generate montages of glyphs
 outp/thermal-sans-mono-17/thermal-sans-mono-17.png: $(SMALL_GLYPHS)
-  mkdir -p $(@D)
-  mkdir -p build/montage/17px
-  @echo $^ > build/montage/17px/inputs-unsorted.txt
-  php ./utils/montage/montage-sort.php \
-    build/montage/17px/inputs-unsorted.txt \
-    build/montage/17px/montage-command-list.txt 18x17+0+0
-  parallel < build/montage/17px/montage-command-list.txt
-  convert build/montage/17px/**.pbm -append $@
+	mkdir -p $(@D)
+	mkdir -p build/montage/17px
+	@echo $^ > build/montage/17px/inputs-unsorted.txt
+	php ./utils/montage/montage-sort.php \
+		build/montage/17px/inputs-unsorted.txt \
+		build/montage/17px/montage-command-list.txt 18x17+0+0
+	parallel < build/montage/17px/montage-command-list.txt
+	convert build/montage/17px/**.pbm -append $@
 
 outp/thermal-sans-mono-24/thermal-sans-mono-24.png: $(LARGE_GLPYHS)
-  mkdir -p $(@D)
-  mkdir -p build/montage/24px
-  @echo $^ > build/montage/24px/inputs-unsorted.txt
-  php ./utils/montage/montage-sort.php \
-    build/montage/24px/inputs-unsorted.txt \
-    build/montage/24px/montage-command-list.txt 24x24+0+0
-  parallel < build/montage/24px/montage-command-list.txt
-  convert build/montage/24px/**.pbm -append $@
+	mkdir -p $(@D)
+	mkdir -p build/montage/24px
+	@echo $^ > build/montage/24px/inputs-unsorted.txt
+	php ./utils/montage/montage-sort.php \
+		build/montage/24px/inputs-unsorted.txt \
+		build/montage/24px/montage-command-list.txt 24x24+0+0
+	parallel < build/montage/24px/montage-command-list.txt
+	convert build/montage/24px/**.pbm -append $@
 
 outp/thermal-sans-mono-24/thermal-sans-mono-24.bdf: $(LARGE_GLPYHS)
-  mkdir -p $(@D)
-  mkdir -p build/bdf/24px
-  @echo $^ > build/bdf/24px/inputs-unsorted.txt
-  php ./utils/pbm2bdf/pbm2bdf.php \
-    build/bdf/24px/inputs-unsorted.txt 24 $@
+	mkdir -p $(@D)
+	mkdir -p build/bdf/24px
+	@echo $^ > build/bdf/24px/inputs-unsorted.txt
+	php ./utils/pbm2bdf/pbm2bdf.php \
+		build/bdf/24px/inputs-unsorted.txt 24 $@
 
 outp/thermal-sans-mono-17/thermal-sans-mono-17.bdf: $(SMALL_GLYPHS)
-  mkdir -p $(@D)
-  mkdir -p build/bdf/17px
-  @echo $^ > build/bdf/17px/inputs-unsorted.txt
-  php ./utils/pbm2bdf/pbm2bdf.php \
-    build/bdf/17px/inputs-unsorted.txt 17 $@
+	mkdir -p $(@D)
+	mkdir -p build/bdf/17px
+	@echo $^ > build/bdf/17px/inputs-unsorted.txt
+	php ./utils/pbm2bdf/pbm2bdf.php \
+		build/bdf/17px/inputs-unsorted.txt 17 $@
 
 # Wrap scaling program
 build/trace/24px/%.bold.pbm: build/scale/16px/%.pbm definitions/thermalsans24.csv
-  mkdir -p $(@D)
-  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 12x24 20; \
-  else \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 24x24 20; \
-  fi
+	mkdir -p $(@D)
+	if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+		php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 12x24 20; \
+	else \
+		php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 24x24 20; \
+	fi
 
 build/trace/17px/%.bold.pbm: build/scale/16px/%.pbm definitions/thermalsans17.csv
-  mkdir -p $(@D)
-  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 9x17 20; \
-  else \
-    php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 18x17 20; \
-  fi
+	mkdir -p $(@D)
+	if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+		php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 9x17 20; \
+	else \
+		php ./utils/fontscale-wrapper/fontscale-wrapper.php $(basename $(@F)) $@ $^ $(UNIFONT_PATH) 18x17 20; \
+	fi
 
 # Generate raw scaled glyphs
 build/scale/24px/%.pbm: build/scale/16px/%.pbm
-  mkdir -p $(@D)
-  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
-    convert $< -resize 12x24 $@; \
-  else \
-    convert $< -resize 24x24 $@; \
-  fi
+	mkdir -p $(@D)
+	if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+		convert $< -resize 12x24 $@; \
+	else \
+		convert $< -resize 24x24 $@; \
+	fi
 
 build/scale/17px/%.pbm: build/scale/16px/%.pbm
-  mkdir -p $(@D)
-  if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
-    convert $< -resize 9x17 $@; \
-  else \
-    convert $< -resize 18x17 $@; \
-  fi
+	mkdir -p $(@D)
+	if [ "$$(identify -format '%w' $<)" -eq "8" ]; then \
+		convert $< -resize 9x17 $@; \
+	else \
+		convert $< -resize 18x17 $@; \
+	fi
 
 # Actual Unifont extraction
 build/scale/16px/%.pbm:
-  mkdir -p $(@D)
-  php ./utils/hex2pbm/hex2pbm.php $(UNIFONT_PATH) $(basename $(@F)) $@
+	mkdir -p $(@D)
+	php ./utils/hex2pbm/hex2pbm.php $(UNIFONT_PATH) $(basename $(@F)) $@
 
 # Generate placeholder glpyhs
 build/placeholder/24px/%.pbm:
-  mkdir -p $(@D)
-  php ./utils/placeholder/placeholder.php $(basename $(@F)) large $@
+	mkdir -p $(@D)
+	php ./utils/placeholder/placeholder.php $(basename $(@F)) large $@
 
 build/placeholder/17px/%.pbm:
-  mkdir -p $(@D)
-  php ./utils/placeholder/placeholder.php $(basename $(@F)) small $@
+	mkdir -p $(@D)
+	php ./utils/placeholder/placeholder.php $(basename $(@F)) small $@
 
 # Conversion
 %.pcf: %.bdf
-  bdftopcf -o $@ $< 
+	bdftopcf -o $@ $< 
 
 #%.gz: %
-#  gzip $< > $@
+#	gzip $< > $@
 
 clean:
-  rm -Rf build/ outp/
+	rm -Rf build/ outp/
 """
 
 placeholderSmallTargets = []
