@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "mike42/image-php": "dev-master"
+        "mike42/gfx-php": "dev-master"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.2"

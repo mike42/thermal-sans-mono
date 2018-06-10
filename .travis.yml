@@ -1,6 +1,8 @@
 ---
 # We are actually a mix of languages, but need to start from somewhere
-language: php 
+language: php
+php:
+  - '7.0'
 
 install:
   - DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install unifont imagemagick fontforge maven python3

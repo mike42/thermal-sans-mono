@@ -4,21 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c334bc04abbdb0901e20405232249d64",
-    "content-hash": "4c207f677f9017f3dd07ad8d12b4f547",
+    "content-hash": "bb459dad44f545eaeac08c4dce69281b",
     "packages": [
         {
-            "name": "mike42/image-php",
+            "name": "mike42/gfx-php",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mike42/image-php.git",
-                "reference": "ae13e69e897af0afed98e41dc32d3c17fd0d8473"
+                "url": "https://github.com/mike42/gfx-php.git",
+                "reference": "3ac1be905612f3e2f05f32de2aca154e52f69bca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mike42/image-php/zipball/ae13e69e897af0afed98e41dc32d3c17fd0d8473",
-                "reference": "ae13e69e897af0afed98e41dc32d3c17fd0d8473",
+                "url": "https://api.github.com/repos/mike42/gfx-php/zipball/3ac1be905612f3e2f05f32de2aca154e52f69bca",
+                "reference": "3ac1be905612f3e2f05f32de2aca154e52f69bca",
                 "shasum": ""
             },
             "require-dev": {
@@ -41,24 +40,24 @@
                     "email": "michael.billington@gmail.com"
                 }
             ],
-            "description": "The pure PHP image processing library",
-            "homepage": "https://github.com/mike42/image-php",
-            "time": "2018-04-09 20:11:40"
+            "description": "The pure PHP graphics library",
+            "homepage": "https://github.com/mike42/gfx-php",
+            "time": "2018-06-10T13:23:10+00:00"
         }
     ],
     "packages-dev": [
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.2.3",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "4842476c434e375f9d3182ff7b89059583aa8b27"
+                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/4842476c434e375f9d3182ff7b89059583aa8b27",
-                "reference": "4842476c434e375f9d3182ff7b89059583aa8b27",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
+                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
                 "shasum": ""
             },
             "require": {
@@ -96,13 +95,13 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-02-20 21:35:23"
+            "time": "2018-06-06T23:58:19+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "mike42/image-php": 20
+        "mike42/gfx-php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

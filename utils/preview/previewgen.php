@@ -21,4 +21,5 @@ foreach($lines as $line) {
   $fileLists[] = "pbm:<(convert " . implode(" ", $files) . " +append pbm:-)"; 
 }
 
-echo "convert " . implode(" ", $fileLists) . " -append foo.png";
+$cmd = "convert " . implode(" ", $fileLists) . " -append preview.png";
+system("bash -c \"$cmd\"");
