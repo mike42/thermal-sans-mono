@@ -236,7 +236,7 @@ $img->writeImage($outLargePbm);
 
 // Scale down and return
 $target = (int)$height / 10;
-$cmd = "convert $outLargePbm -resize x$target $outSmallPbm";
+$cmd = "convert $outLargePbm $outLargePbm.ppm; convert $outLargePbm.ppm -resize x$target $outSmallPbm.ppm; convert $outSmallPbm.ppm $outSmallPbm";
 system($cmd, $retval);
 exit($retval);
 

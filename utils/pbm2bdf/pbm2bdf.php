@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../vendor/autoload.php");
-use Mike42\ImagePhp\Image;
+use Mike42\GfxPhp\Image;
 
 if(count($argv) != 4) {
   die("Usage: " . $argv[0] . " infiles.txt height outfile.bdf\n");

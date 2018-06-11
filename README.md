@@ -1,5 +1,7 @@
 # Thermal Sans Mono
 
+[![Build Status](https://travis-ci.org/mike42/thermal-sans-mono.svg?branch=master)](https://travis-ci.org/mike42/thermal-sans-mono)
+
 **Thermal Sans Mono** is a set of specialized free bitmap fonts for use on
 thermal receipt printers and printer emulators.
 

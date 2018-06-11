@@ -14,6 +14,7 @@ install:
   - DEBIAN_FRONTEND=noninteractive sudo apt-get -yq install unifont imagemagick fontforge maven python3
   - git clone https://github.com/mike42/fontscale-util
   - (cd fontscale-util && mvn clean package)
+  - (cd utils && composer install)
   - cp fontscale-util/target/fontscale-util-*-jar-with-dependencies.jar utils/fontscale-wrapper/fontscale-utils.jar
   - which php
   - which python
